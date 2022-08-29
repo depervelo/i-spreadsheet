@@ -12,6 +12,10 @@
 		<script src="i-spreadsheet.js"></script>
 		<script type="text/javascript">
 			var ispreadsheet = new ISpreadSheet('#root');
+			ispreadsheet.setOptions({
+				rowCnt: 100,
+				colCnt: 100,
+			});
 			ispreadsheet.load();
 			console.log(ispreadsheet);
 		</script>

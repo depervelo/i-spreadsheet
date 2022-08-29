@@ -91,7 +91,7 @@ interface ISpreadSheetBox {
 class ISpreadSheet {
 	readonly el: Element;
 	readonly canvas: Canvas;
-	options: ISpreadSheetOptions;
+	options: Required<ISpreadSheetOptions>;
 	range: ISpreadSheetRange;
 	freeze: ISpreadSheetFreeze;
 	currentBox: ISpreadSheetCurrentBox;
@@ -142,6 +142,9 @@ class ISpreadSheet {
 
 		// 옵션
 		this.options = {
+			rowCanvas: (ctx, row, x, y, width, height) => {},
+			colCanvas: (ctx, col, x, y, width, height) => {},
+			cellCanvas: (ctx, row, col, x, y, width, height) => {},
 			rowText: row => {
 				return {
 					text: (row + 1).toString(),
@@ -242,6 +245,28 @@ class ISpreadSheet {
 	}
 
 	/**
+	 * 컨버스 그리기 사전작업
+	 * - 캔버스의 총 너비, 높이 구하기
+	 */
+	private getTotal() {
+		const { rowCnt, colCnt, rowHeight, colWidth } = this.options;
+		let totalWidth = 0;
+		let totalHeight = 0;
+
+		for (let row = 0; row < rowCnt; row++) {
+			const height = rowHeight(row);
+			totalHeight += height;
+		}
+
+		for (let col = 0; col < colCnt; col++) {
+			const width = colWidth(col);
+			totalWidth += width;
+		}
+
+		return { totalWidth, totalHeight };
+	}
+
+	/**
 	 * 옵션 변경
 	 */
 	setOptions(options: ISpreadSheetOptions) {
@@ -252,7 +277,8 @@ class ISpreadSheet {
 	 * 캔버스 그리기
 	 */
 	load() {
-		console.log('load');
+		const { totalWidth, totalHeight } = this.getTotal();
+		console.log('load', totalWidth, totalHeight);
 	}
 }
 
